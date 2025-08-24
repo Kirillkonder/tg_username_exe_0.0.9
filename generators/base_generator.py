@@ -1,0 +1,79 @@
+import random
+from typing import List, Set
+from . import category_generators as cg
+from .utils import should_clear_memory
+
+class UsernameGenerator:
+    def __init__(self):
+        self.used_usernames: Set[str] = set()
+        self.generation_attempts = 0
+        self.max_attempts_per_batch = 3000
+
+    def should_clear_memory(self) -> bool:
+        return should_clear_memory(self.used_usernames, self.generation_attempts)
+
+    def generate_batch(self, count: int, category: str = "4char") -> List[str]:
+        """Генерация батча юзернеймов по категории с бесконечными вариациями"""
+        if self.should_clear_memory():
+            self.clear_used_usernames()
+        
+        # Основные генераторы
+        primary_generators = {
+            "4char": cg.CategoryGenerators.generate_4char,
+            "5char": cg.CategoryGenerators.generate_5char,
+            "english": cg.CategoryGenerators.generate_english_words,
+            "scam": cg.CategoryGenerators.generate_scam,
+            "nft": cg.CategoryGenerators.generate_nft,
+            "telegram": cg.CategoryGenerators.generate_telegram,
+            "humans": cg.CategoryGenerators.generate_humans,
+            "gods": cg.CategoryGenerators.generate_gods,
+            "rappers": cg.CategoryGenerators.generate_rappers,
+            "actors": cg.CategoryGenerators.generate_actors,
+            "brands": cg.CategoryGenerators.generate_brands,
+            "games": cg.CategoryGenerators.generate_games,
+            "memes": cg.CategoryGenerators.generate_memes,
+            "crypto": cg.CategoryGenerators.generate_crypto
+        }
+        
+        # Креативные генераторы для бесконечной генерации
+        creative_generators = {
+            "4char": cg.CategoryGenerators.generate_creative_patterns,
+            "5char": cg.CategoryGenerators.generate_creative_patterns,
+            "english": cg.CategoryGenerators.generate_creative_words,
+            "scam": cg.CategoryGenerators.generate_creative_scam,
+            "nft": cg.CategoryGenerators.generate_creative_nft,
+            "telegram": cg.CategoryGenerators.generate_creative_telegram,
+            "humans": cg.CategoryGenerators.generate_creative_names,
+            "gods": cg.CategoryGenerators.generate_creative_gods,
+            "rappers": cg.CategoryGenerators.generate_creative_rappers,
+            "actors": cg.CategoryGenerators.generate_creative_actors,
+            "brands": cg.CategoryGenerators.generate_creative_brands,
+            "games": cg.CategoryGenerators.generate_creative_games,
+            "memes": cg.CategoryGenerators.generate_creative_memes,
+            "crypto": cg.CategoryGenerators.generate_creative_crypto
+        }
+        
+        # Сначала пробуем основной генератор
+        primary_gen = primary_generators.get(category, cg.CategoryGenerators.generate_4char)
+        usernames = primary_gen(count, self.used_usernames)
+        
+        # Если не хватило - используем креативный генератор
+        if len(usernames) < count:
+            remaining = count - len(usernames)
+            creative_gen = creative_generators.get(category, cg.CategoryGenerators.generate_creative_patterns)
+            creative_usernames = creative_gen(remaining, self.used_usernames)
+            usernames.extend(creative_usernames)
+        
+        self.generation_attempts += count
+        
+        print(f"🎲 Сгенерировано {len(usernames)} юзернеймов (категория: {category})")
+        if usernames:
+            print(f"📋 Примеры: {', '.join(usernames[:3])}...")
+        
+        return usernames
+
+    def clear_used_usernames(self):
+        """Очистка истории использованных юзернеймов"""
+        self.used_usernames.clear()
+        self.generation_attempts = 0
+        print("🧹 История юзернеймов очищена")
