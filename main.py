@@ -23,11 +23,11 @@ class UsernameCheckerApp:
         self.total_found = 0
         self.start_time = None
         self.current_category = "4char"  # Категория по умолчанию
+        self.current_algorithm = "suffix_prefix"  # ← ДОБАВЬТЕ ЭТУ СТРОЧКУ!
         self.batch_count = 0
         self.total_checked_since_restart = 0
         
         self.setup_ui()
-        
    
     def setup_ui(self):
         # Create the tabs
@@ -58,6 +58,19 @@ class UsernameCheckerApp:
         category_frame.pack(side='left', fill='y', padx=5)
         
         self.category_var = tk.StringVar(value="4char")  # Default category
+        
+        algorithm_frame = ttk.LabelFrame(control_frame, text="Generation Algorithm")
+        algorithm_frame.pack(side='left', fill='y', padx=5)
+        
+        self.algorithm_var = tk.StringVar(value="suffix_prefix")  # Алгоритм по умолчанию
+        
+        # Создать радиокнопки для выбора алгоритма
+        ttk.Radiobutton(algorithm_frame, text="Suffix/Prefix", variable=self.algorithm_var, 
+                    value="suffix_prefix", command=self.update_algorithm).pack(anchor='w')
+        ttk.Radiobutton(algorithm_frame, text="Word Fusion", variable=self.algorithm_var, 
+                    value="word_fusion", command=self.update_algorithm).pack(anchor='w')
+        ttk.Radiobutton(algorithm_frame, text="Premium Names", variable=self.algorithm_var, 
+                    value="premium", command=self.update_algorithm).pack(anchor='w')
 
         # Create radio buttons for category selection
         ttk.Radiobutton(category_frame, text="4-Character", variable=self.category_var, 
@@ -161,7 +174,15 @@ class UsernameCheckerApp:
         # Bind click event for username cells
         self.results_tree.bind("<ButtonRelease-1>", self.on_item_click)  # Click event binding
 
-
+    def update_algorithm(self):
+        """Обновляет выбранный алгоритм генерации"""
+        self.current_algorithm = self.algorithm_var.get()
+        algorithm_names = {
+            "suffix_prefix": "Suffix/Prefix",
+            "word_fusion": "Word Fusion", 
+            "premium": "Premium Names"
+        }
+        self.log_message(f"⚙️ Выбран алгоритм: {algorithm_names.get(self.current_algorithm, 'Suffix/Prefix')}")
         
     def update_category(self):
         """Обновляет выбранную категорию"""
@@ -373,7 +394,7 @@ class UsernameCheckerApp:
             
     def check_batch(self):
         """Проверка одного батча юзернеймов"""
-        usernames = self.generator.generate_batch(40, self.current_category)
+        usernames = self.generator.generate_batch(40, self.current_category, self.current_algorithm)
         self.log_message(f"🎲 Сгенерировано: {len(usernames)} юзернеймов")
         if usernames:
             self.log_message(f"📋 Примеры: {', '.join(usernames[:3])}...")
@@ -449,3 +470,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+  

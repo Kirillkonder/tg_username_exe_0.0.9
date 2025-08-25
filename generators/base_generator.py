@@ -26,29 +26,29 @@ class UsernameGenerator:
     def should_clear_memory(self) -> bool:
         return should_clear_memory(self.used_usernames, self.generation_attempts)
 
-    def generate_batch(self, count: int, category: str = "4char") -> List[str]:
-        """Генерация батча юзернеймов по категории с бесконечными вариациями"""
+    def generate_batch(self, count: int, category: str = "4char", algorithm: str = "suffix_prefix") -> List[str]:
+        """Генерация батча юзернеймов по категории и алгоритму"""
         if self.should_clear_memory():
             self.clear_used_usernames()
 
         # Основные генераторы
         primary_generators = {
-            "4char": cg.CategoryGenerators.generate_4char,
-            "5char": cg.CategoryGenerators.generate_5char,
-            "english": cg.CategoryGenerators.generate_english_words,
-            "scam": cg.CategoryGenerators.generate_scam,
-            "nft": cg.CategoryGenerators.generate_nft,
-            "telegram": cg.CategoryGenerators.generate_telegram,
-            "humans": cg.CategoryGenerators.generate_humans,
-            "gods": cg.CategoryGenerators.generate_gods,
-            "rappers": cg.CategoryGenerators.generate_rappers,
-            "actors": cg.CategoryGenerators.generate_actors,
-            "brands": cg.CategoryGenerators.generate_brands,
-            "games": cg.CategoryGenerators.generate_games,
-            "memes": cg.CategoryGenerators.generate_memes,
-            "crypto": cg.CategoryGenerators.generate_crypto
+            "4char": lambda c, u: cg.CategoryGenerators.generate_4char(c, u, algorithm),
+            "5char": lambda c, u: cg.CategoryGenerators.generate_5char(c, u, algorithm),
+            "english": lambda c, u: cg.CategoryGenerators.generate_english_words(c, u, algorithm),
+            "scam": lambda c, u: cg.CategoryGenerators.generate_scam(c, u, algorithm),
+            "nft": lambda c, u: cg.CategoryGenerators.generate_nft(c, u, algorithm),
+            "telegram": lambda c, u: cg.CategoryGenerators.generate_telegram(c, u, algorithm),
+            "humans": lambda c, u: cg.CategoryGenerators.generate_humans(c, u, algorithm),
+            "gods": lambda c, u: cg.CategoryGenerators.generate_gods(c, u, algorithm),
+            "rappers": lambda c, u: cg.CategoryGenerators.generate_rappers(c, u, algorithm),
+            "actors": lambda c, u: cg.CategoryGenerators.generate_actors(c, u, algorithm),
+            "brands": lambda c, u: cg.CategoryGenerators.generate_brands(c, u, algorithm),
+            "games": lambda c, u: cg.CategoryGenerators.generate_games(c, u, algorithm),
+            "memes": lambda c, u: cg.CategoryGenerators.generate_memes(c, u, algorithm),
+            "crypto": lambda c, u: cg.CategoryGenerators.generate_crypto(c, u, algorithm)
         }
-        
+            
         # Креативные генераторы для бесконечной генерации
         creative_generators = {
             "4char": cg.CategoryGenerators.generate_creative_patterns,

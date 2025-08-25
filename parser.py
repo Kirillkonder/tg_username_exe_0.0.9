@@ -150,27 +150,48 @@ class FragmentParser:
             print(f"   ⚠️ {username} - Ошибка: {type(e).__name__}")
             return result
 
-    def estimate_price(self, username: str) -> str:
-        """Оценивает примерную стоимость на основе реальных цен Fragment"""
+    def estimate_price(self, username: str, algorithm: str = "suffix_prefix") -> str:
+        """Оценивает стоимость с учетом алгоритма генерации"""
         length = len(username)
         
-        # Реальные примерные цены с Fragment (на основе открытых данных)
-        if length == 3:
-            return "$10,000-50,000"  # 3-char очень редкие
-        elif length == 4:
-            return "$5,000-20,000"   # 4-char premium
-        elif length == 5:
-            return "$1,000-5,000"    # 5-char quality
-        elif length == 6:
-            return "$500-2,000"      # 6-char good
-        elif length == 7:
-            return "$200-1,000"      # 7-char standard
-        elif length == 8:
-            return "$100-500"        # 8-char average
-        elif length >= 9:
-            return "$50-200"         # 9+ char basic
+        # Базовые цены
+        base_prices = {
+            3: "$10,000-50,000",
+            4: "$5,000-20,000", 
+            5: "$1,000-5,000",
+            6: "$500-2,000",
+            7: "$200-1,000",
+            8: "$100-500",
+            9: "$50-200"
+        }
+        
+        base_price = base_prices.get(length, "$100-500")
+        
+        # Модификаторы алгоритма
+        algorithm_modifiers = {
+            "premium": 5.0,  # В 5 раз дороже
+            "word_fusion": 2.0,  # В 2 раза дороже
+            "suffix_prefix": 1.0  # Базовая цена
+        }
+        
+        # Проверяем премиальные характеристики
+        premium_factors = 1.0
+        if algorithm == "premium":
+            # Дополнительные бонусы за премиальность
+            if length <= 4:
+                premium_factors *= 2.0
+            if username.isalpha() and not any(char in 'aeiou' for char in username):
+                premium_factors *= 1.5  # Без гласных - дороже
+            if username == username[::-1]:
+                premium_factors *= 3.0  # Палиндром - очень дорого
+        
+        # Итоговая цена
+        modifier = algorithm_modifiers.get(algorithm, 1.0) * premium_factors
+        
+        if modifier > 1.0:
+            return f"${int(1000 * modifier)}-{int(10000 * modifier)}"  # Примерная оценка
         else:
-            return "$100-500"        # default
+            return base_price
 
     def check_usernames_batch(self, usernames: List[str], max_workers: int = 10) -> List[Dict]:
         """Многопоточная проверка юзернеймов"""
