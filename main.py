@@ -28,124 +28,140 @@ class UsernameCheckerApp:
         
         self.setup_ui()
         
+   
     def setup_ui(self):
-        # Создаем вкладки
+        # Create the tabs
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill='both', expand=True, padx=10, pady=10)
         
-        # Вкладка 1: Главная (кнопки и логи)
+        # Tab 1: Main (buttons and logs)
         self.main_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.main_frame, text="Главная")
+        self.notebook.add(self.main_frame, text="Main")
         
-        # Вкладка 2: Доступные юзернеймы
+        # Tab 2: Available Usernames
         self.results_frame = ttk.Frame(self.notebook)
-        self.notebook.add(self.results_frame, text="Доступные юзернеймы")
+        self.notebook.add(self.results_frame, text="Available Usernames")
         
         self.setup_main_tab()
         self.setup_results_tab()
-        
+
+
+    
+
     def setup_main_tab(self):
-        # Верхняя панель с кнопками и выбором категории
+        # Top panel with buttons and category selection
         control_frame = ttk.Frame(self.main_frame)
         control_frame.pack(fill='x', padx=10, pady=10)
         
-        # Выбор категории
-        category_frame = ttk.LabelFrame(control_frame, text="Выбор категории")
+        # Create category selection frame
+        category_frame = ttk.LabelFrame(control_frame, text="Select Category")
         category_frame.pack(side='left', fill='y', padx=5)
         
-        self.category_var = tk.StringVar(value="4char")
-        
-        ttk.Radiobutton(category_frame, text="4-символьные", variable=self.category_var, 
+        self.category_var = tk.StringVar(value="4char")  # Default category
+
+        # Create radio buttons for category selection
+        ttk.Radiobutton(category_frame, text="4-Character", variable=self.category_var, 
                        value="4char", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="5-символьные", variable=self.category_var, 
+        ttk.Radiobutton(category_frame, text="5-Character", variable=self.category_var, 
                        value="5char", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Английские слова", variable=self.category_var, 
+        ttk.Radiobutton(category_frame, text="English Words", variable=self.category_var, 
                        value="english", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="SCAM-тематика", variable=self.category_var, 
-               value="scam", command=self.update_category).pack(anchor='w')
-        # В методе setup_main_tab() добавь новые категории:
+        ttk.Radiobutton(category_frame, text="SCAM Themed", variable=self.category_var, 
+                       value="scam", command=self.update_category).pack(anchor='w')
         ttk.Radiobutton(category_frame, text="NFT", variable=self.category_var, 
-                    value="nft", command=self.update_category).pack(anchor='w')
+                       value="nft", command=self.update_category).pack(anchor='w')
         ttk.Radiobutton(category_frame, text="Telegram", variable=self.category_var, 
-                    value="telegram", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Имена людей", variable=self.category_var, 
-                    value="humans", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Боги", variable=self.category_var, 
-                    value="gods", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Рэперы", variable=self.category_var, 
-                    value="rappers", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Актеры", variable=self.category_var, 
-                    value="actors", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Бренды", variable=self.category_var, 
-                    value="brands", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Игры", variable=self.category_var, 
-                    value="games", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Мемы", variable=self.category_var, 
-                    value="memes", command=self.update_category).pack(anchor='w')
-        ttk.Radiobutton(category_frame, text="Крипта", variable=self.category_var, 
-                    value="crypto", command=self.update_category).pack(anchor='w')
+                       value="telegram", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Human Names", variable=self.category_var, 
+                       value="humans", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Gods", variable=self.category_var, 
+                       value="gods", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Rappers", variable=self.category_var, 
+                       value="rappers", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Actors", variable=self.category_var, 
+                       value="actors", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Brands", variable=self.category_var, 
+                       value="brands", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Games", variable=self.category_var, 
+                       value="games", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Memes", variable=self.category_var, 
+                       value="memes", command=self.update_category).pack(anchor='w')
+        ttk.Radiobutton(category_frame, text="Crypto", variable=self.category_var, 
+                       value="crypto", command=self.update_category).pack(anchor='w')
         
-        # Кнопки управления
+        # Buttons control panel
         button_frame = ttk.Frame(control_frame)
         button_frame.pack(side='right', fill='y', padx=5)
         
-        self.start_button = ttk.Button(button_frame, text="▶️ Старт", command=self.start_checking)
+        # Add existing buttons
+        self.start_button = ttk.Button(button_frame, text="▶️ Start", command=self.start_checking)
         self.start_button.pack(side='left', padx=5)
         
-        self.stop_button = ttk.Button(button_frame, text="⏹️ Стоп", command=self.stop_checking, state='disabled')
+        self.stop_button = ttk.Button(button_frame, text="⏹️ Stop", command=self.stop_checking, state='disabled')
         self.stop_button.pack(side='left', padx=5)
         
-        self.save_button = ttk.Button(button_frame, text="💾 Сохранить", command=self.save_results)
+        self.save_button = ttk.Button(button_frame, text="💾 Save", command=self.save_results)
         self.save_button.pack(side='left', padx=5)
         
-        self.refresh_button = ttk.Button(button_frame, text="🔄 Обновить", command=self.update_results_tab)
+        self.refresh_button = ttk.Button(button_frame, text="🔄 Refresh", command=self.update_results_tab)
         self.refresh_button.pack(side='left', padx=5)
         
-        # Статистика
-        stats_frame = ttk.LabelFrame(self.main_frame, text="Статистика")
+        # New Clear Button
+        self.clear_button = ttk.Button(button_frame, text="🧹 Clear All", command=self.clear_all)
+        self.clear_button.pack(side='left', padx=5)
+        
+        # Statistics and log display
+        stats_frame = ttk.LabelFrame(self.main_frame, text="Statistics")
         stats_frame.pack(fill='x', padx=10, pady=5)
         
-        self.stats_label = ttk.Label(stats_frame, text="Ожидание запуска...")
+        self.stats_label = ttk.Label(stats_frame, text="Waiting for start...")
         self.stats_label.pack(padx=10, pady=5)
         
-        # Логи
-        log_frame = ttk.LabelFrame(self.main_frame, text="Логи в реальном времени")
+        # Logs
+        log_frame = ttk.LabelFrame(self.main_frame, text="Real-time Logs")
         log_frame.pack(fill='both', expand=True, padx=10, pady=5)
         
         self.log_text = scrolledtext.ScrolledText(log_frame, height=20, width=100)
         self.log_text.pack(fill='both', expand=True, padx=5, pady=5)
         self.log_text.config(state='disabled')
+
         
     def setup_results_tab(self):
-        # Таблица с доступными юзернеймами
+        """Sets up the results tab with available usernames and click-to-copy functionality."""
         results_frame = ttk.Frame(self.results_frame)
         results_frame.pack(fill='both', expand=True, padx=10, pady=10)
         
-        # Заголовок
-        self.results_label = ttk.Label(results_frame, text="Доступные юзернеймы не найдены")
+        # Title
+        self.results_label = ttk.Label(results_frame, text="Available usernames not found")
         self.results_label.pack(pady=5)
         
-        # Таблица
+        # Table columns (added 'copy' column for better structure)
         columns = ('username', 'price', 'status', 'response_time', 'url')
         self.results_tree = ttk.Treeview(results_frame, columns=columns, show='headings', height=15)
-        
-        self.results_tree.heading('username', text='Юзернейм')
-        self.results_tree.heading('price', text='💰 Цена')  # Колонка цены
-        self.results_tree.heading('status', text='Статус')
-        self.results_tree.heading('response_time', text='Время ответа')
-        self.results_tree.heading('url', text='Ссылка')
-        
+
+        self.results_tree.heading('username', text='Username')
+        self.results_tree.heading('price', text='💰 Price')
+        self.results_tree.heading('status', text='Status')
+        self.results_tree.heading('response_time', text='Response Time')
+        self.results_tree.heading('url', text='URL')
+
+        # Set column widths
         self.results_tree.column('username', width=120)
         self.results_tree.column('status', width=100)
         self.results_tree.column('response_time', width=80)
         self.results_tree.column('url', width=200)
-        
-        # Скроллбар для таблицы
+
+        # Scrollbar for the table
         scrollbar = ttk.Scrollbar(results_frame, orient='vertical', command=self.results_tree.yview)
         self.results_tree.configure(yscrollcommand=scrollbar.set)
         
         self.results_tree.pack(side='left', fill='both', expand=True)
         scrollbar.pack(side='right', fill='y')
+
+        # Bind click event for username cells
+        self.results_tree.bind("<ButtonRelease-1>", self.on_item_click)  # Click event binding
+
+
         
     def update_category(self):
         """Обновляет выбранную категорию"""
@@ -171,13 +187,44 @@ class UsernameCheckerApp:
             "crypto": "Крипта"
         }
         return categories.get(self.current_category, "4-символьные")
+    
+    
         
     def log_message(self, message):
-        """Добавляет сообщение в лог"""
+        """Adds a message to the real-time logs"""
         self.log_text.config(state='normal')
         self.log_text.insert('end', message + '\n')
         self.log_text.see('end')
         self.log_text.config(state='disabled')
+
+    def clear_all(self):
+        """Clears all logs and resets the displayed available usernames"""
+        # Clear the logs in the UI
+        self.log_text.config(state='normal')
+        self.log_text.delete(1.0, tk.END)  # Clear all text in the log
+        self.log_text.config(state='disabled')
+        
+        # Reset the list of available usernames
+        self.available_usernames = []
+        
+        # Update the UI table to show no available usernames
+        self.results_label.config(text="Available usernames not found")
+        
+        # Clear the treeview of results
+        for item in self.results_tree.get_children():
+            self.results_tree.delete(item)
+        
+        # Reset statistics
+        self.total_checked = 0
+        self.total_found = 0
+        self.total_checked_since_restart = 0
+        self.batch_count = 0
+        
+        # Update statistics display
+        self.update_stats()
+        
+        # Log the clearing action
+        self.log_message("🧹 All logs and found usernames cleared!")
         
     def update_stats(self):
         """Обновляет статистику"""
@@ -195,25 +242,43 @@ class UsernameCheckerApp:
             self.stats_label.config(text=stats_text)
         
     def update_results_tab(self):
-        """Обновляет вкладку с результатами"""
-        # Очищаем таблицу
+        """Updates the results tab with available usernames."""
         for item in self.results_tree.get_children():
             self.results_tree.delete(item)
-            
+
         if self.available_usernames:
-            self.results_label.config(text=f"Найдено {len(self.available_usernames)} доступных юзернеймов")
+            self.results_label.config(text=f"Found {len(self.available_usernames)} available usernames")
             
+            # Insert usernames into the table and make them clickable
             for user in self.available_usernames:
                 self.results_tree.insert('', 'end', values=(
                     user['username'],
-                    user.get('price', 'N/A'),  # Добавляем цену
+                    user.get('price', 'N/A'),  # Add price column
                     user['status'],
-                    f"{user['response_time']}с",
+                    f"{user['response_time']}s",
                     user['url']
                 ))
         else:
-            self.results_label.config(text="Доступные юзернеймы не найдены")
-                
+            self.results_label.config(text="No available usernames found")
+
+    def on_item_click(self, event):
+        """Handles item click in the Treeview (when username is clicked)."""
+        item = self.results_tree.selection()
+        if item:
+            username = self.results_tree.item(item[0])['values'][0]  # Get the username from the first column
+            self.copy_to_clipboard(username)  # Copy the clicked username to the clipboard
+
+    def copy_to_clipboard(self, username):
+        """Copies the given username to the clipboard and shows feedback."""
+        self.root.clipboard_clear()  # Clear current clipboard content
+        self.root.clipboard_append(username)  # Add the username to the clipboard
+        self.log_message(f"Copied {username} to clipboard")  # Optionally log the action
+        
+        # Update the results label with a copy confirmation message
+        self.results_label.config(text=f"Copied Username: {username}")
+
+
+
     def save_results(self):
         """Сохраняет результаты в файл"""
         if not self.available_usernames:
